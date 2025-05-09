@@ -276,8 +276,7 @@ class WeatherCard extends LitElement {
         </span>
        <span class="title">${this.hass.states["sensor.naver_weather_nowweather_1"].state}<br>
 	 <span class="subinfo">
-	    ${this.hass.states["sensor.naver_weather_todaymintemp_1"].state}° / <span class="highTemp">${this.hass.states["sensor.naver_weather_todaymaxtemp_1"].state}°</span><br>
-	    습도 ${stateObj.attributes.humidity}% ${this.hass.states["sensor.naver_weather_windbearing_1"].state}풍 ${this.hass.states["sensor.naver_weather_windspeed_1"].state}<span class="unit"> m/s</span>
+	    ${this.hass.states["sensor.naver_weather_todaymintemp_1"].state}° / <span class="highTemp">${this.hass.states["sensor.naver_weather_todaymaxtemp_1"].state}°</span><br>	    
          </span>
        </span>
         <span class="temp" style="color: ${this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state < 0 ? 'rgb(0,191,255)' : this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state > 27 ? 'orange' : ''};"
