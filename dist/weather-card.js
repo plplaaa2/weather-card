@@ -487,11 +487,13 @@ class WeatherCard extends LitElement {
       }
 	  
       .subinfo {
-        font-weight: 300;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-content: flex-start;       
 	font-size: 0.7em;
-        color: var(--primary-text-color);
-        text-align: left;
-        line-height: 0.5;
+        color: var(--secondary-text-color);        
+        line-height: 0.1;
       }
 
       .temp {
