@@ -496,6 +496,7 @@ class WeatherCard extends LitElement {
         font-size: 2.3em;
         color: var(--primary-text-color);
         position: absolute;
+	top: 0.5em;
         right: 1.2em;
       }
 
@@ -505,6 +506,7 @@ class WeatherCard extends LitElement {
         vertical-align: super;
         color: var(--primary-text-color);
         position: absolute;
+	top: 0.5em;
         right: 1em;
         margin-top: -5px;
         margin-right: 7px;
