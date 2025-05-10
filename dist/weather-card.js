@@ -489,12 +489,11 @@ class WeatherCard extends LitElement {
       .subinfo {
         display: flex;
         flex-flow: row wrap;
-	justify-content: start        
+	justify-content: flex-start;
+        align-item: flex-start
         font-weight: 300;
+	font-size: 0.5em;
         color: var(--primary-text-color);
-        list-style: none;
-        padding: 0 1em;
-        margin: 0;
       }
 
       .temp {
