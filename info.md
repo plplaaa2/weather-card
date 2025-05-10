@@ -1,77 +1,28 @@
-# Lovelace animated weather card
+# Lovelace animated weather card for naver weather
 
-Originally created for the [old UI](https://community.home-assistant.io/t/custom-ui-weather-state-card-with-a-question/23008) converted by @arsaboo and @ciotlosm to [Lovelace](https://community.home-assistant.io/t/custom-ui-weather-state-card-with-a-question/23008/291) and now converted to Lit to make it even better.
+Originally created for the [old UI](https://community.home-assistant.io/t/custom-ui-weather-state-card-with-a-question/23008) converted by @arsaboo and @ciotlosm to [Lovelace](https://community.home-assistant.io/t/custom-ui-weather-state-card-with-a-question/23008/291) and @bramkragten now converted to Lit to make it even better.
 
 This card uses the awesome [animated SVG weather icons by amCharts](https://www.amcharts.com/free-animated-svg-weather-icons/).
 
-![Weather Card](https://github.com/bramkragten/custom-ui/blob/master/weather-card/weather-card.gif?raw=true)
+![normal](https://github.com/user-attachments/assets/f5ebb55a-a573-4218-88cd-d722e834a98a)
 
 Thanks for all picking this card up.
 
-## Installation:
+## 사전 주의사항
 
-### If you are using Firefox:
+기본 센서 값이 'sensor.naver~' 로 시작되는 것만 사용 가능하기 때문에
+한글을 영문으로 쓴 센서값 'sensor.gangsuryang' 일 경우
+기기 및 서비스 -> 네이버 날씨 -> 구성요소에 들어가 센서 값을 'sensor.naver~' 로 다시 수정하여야 사용 가능
 
-Firefox < 66 does not support all the needed functions yet for the editor.
-You change this by enabling `javascript.options.dynamicImport` in `about:config`.
+## 설치 방법:
 
-Add the following to resources in your lovelace config:
+네이버 날씨설치
+Special Thanks HACS 네이버 날씨 제작자 miumida님
 
-```yaml
-resources:
-  - url: /hacsfiles/weather-card/weather-card.js
-    type: module
-```
+1. 기존 weather-card 삭제
 
-## Configuration:
+2. 네이버 날씨 특화 Weather-card 설치 ( HACS -> frontend -> : -> custom repositories)
+repositories : https://github.com/plplaaa2/weather-card
+category : dashboard
 
-And add a card with type `custom:weather-card`:
-
-```yaml
-- type: custom:weather-card
-  entity: weather.yourweatherentity
-  name: Optional name
-```
-
-If you want to use your local icons add the location to the icons:
-
-```yaml
-- type: custom:weather-card
-  entity: weather.yourweatherentity
-  icons: "/community_plugin/weather-card/icons/"
-```
-
-You can choose wich elements of the weather card you want to show:
-
-The 3 different rows, being:
-
-- The current weather icon, the current temperature and title
-- The details about the current weather
-- The 5 day forecast
-
-```yaml
-type: custom:weather-card
-entity: weather.yourweatherentity
-current: true
-details: false
-forecast: true
-```
-
-If you want to show the sunrise and sunset times, make sure the `sun` component is enabled:
-
-```yaml
-# Example configuration.yaml entry
-sun:
-```
-
-### Dark Sky:
-
-When using Dark Sky you should put the mode to `daily` if you want a daily forecast with highs and lows.
-
-```yaml
-# Example configuration.yaml entry
-weather:
-  - platform: darksky
-    api_key: YOUR_API_KEY
-    mode: daily
-```
+## Dashboard 설정
