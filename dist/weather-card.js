@@ -496,23 +496,23 @@ class WeatherCard extends LitElement {
 
       .temp {
         font-weight: 300;
-        font-size: 2.3em;
+        font-size: 2em;
         color: var(--primary-text-color);
         position: absolute;
-	top: 0.5em;
-        right: 1.2em;	
+        right: 1.2em;
       }
 
       .tempc {
         font-weight: 300;
-        font-size: 1.2em;
+        font-size: 1em;
         vertical-align: super;
         color: var(--primary-text-color);
-        position: absolute;	
+        position: absolute;
         right: 1em;
-        margin-top: -5px;
+        margin-top: -14px;
         margin-right: 7px;
       }
+      
       .hum {
         font-weight: 300;
         font-size: 0.7em;
