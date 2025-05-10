@@ -486,14 +486,10 @@ class WeatherCard extends LitElement {
         color: var(--primary-text-color);
       }
 	  
-      .subinfo {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-content: flex-start;       
+      .subinfo {  
 	font-size: 0.7em;
         color: var(--secondary-text-color);        
-        line-height: 0.1;
+        line-height: 0.3;
       }
 
       .temp {
@@ -511,7 +507,7 @@ class WeatherCard extends LitElement {
         color: var(--primary-text-color);
         position: absolute;
         right: 1em;
-        margin-top: -14px;
+        margin-top: -5px;
         margin-right: 7px;
       }
       
