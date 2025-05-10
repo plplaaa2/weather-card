@@ -497,8 +497,7 @@ class WeatherCard extends LitElement {
         color: var(--primary-text-color);
         position: absolute;
 	top: 0.5em;
-        right: 1.2em;
-	margin-top: -20px;
+        right: 1.2em;	
       }
 
       .tempc {
