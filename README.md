@@ -25,6 +25,7 @@ Thanks for all picking this card up.
 ![image](https://github.com/user-attachments/assets/5c0dcad7-d1b1-4ba9-b462-91c2be380d33)
 
 네이버 날씨의 모든 센서를 이와 같이 변경해야 함
+(단, 뒤에 숫자는 _1 만 가능하기 때문에 네이버 날씨 카드로 쓸 수 있는 지역은 한 곳뿐)
 
 ## 설치 방법
 
