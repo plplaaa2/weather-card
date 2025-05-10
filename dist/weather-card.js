@@ -462,10 +462,10 @@ class WeatherCard extends LitElement {
         cursor: pointer;
         margin: auto;
         overflow: hidden;
-        padding-top: 0em;
-        padding-bottom: 0em;
-        padding-left: 0em;
-        padding-right: 0em;
+        padding-top: 1.3em;
+        padding-bottom: 1.3em;
+        padding-left: 1em;
+        padding-right: 1em;
         position: relative;
       }
 
@@ -506,7 +506,7 @@ class WeatherCard extends LitElement {
         color: var(--primary-text-color);
         position: absolute;
         right: 1em;
-        margin-top: -14px;
+        margin-top: -5px;
         margin-right: 7px;
       }
       .hum {
