@@ -277,8 +277,7 @@ class WeatherCard extends LitElement {
        <span class="title">${this.hass.states["sensor.naver_weather_nowweather_1"].state}<br>
 	 <span class="subinfo">
 	    ${this.hass.states["sensor.naver_weather_todaymintemp_1"].state}° / <span class="highTemp">${this.hass.states["sensor.naver_weather_todaymaxtemp_1"].state}°</span>
-            <br>
-            습도 ${stateObj.attributes.humidity}% ${this.hass.states["sensor.naver_weather_windbearing_1"].state}풍 ${this.hass.states["sensor.naver_weather_windspeed_1"].state}<span class="unit"> m/s</span>
+            <span>습도 ${stateObj.attributes.humidity}% ${this.hass.states["sensor.naver_weather_windbearing_1"].state}풍 ${this.hass.states["sensor.naver_weather_windspeed_1"].state}<span class="unit"> m/s</span></span>
          </span>
        </span>
         <span class="temp" style="color: ${this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state < 0 ? 'rgb(0,191,255)' : this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state > 27 ? 'orange' : ''};"
@@ -305,7 +304,7 @@ class WeatherCard extends LitElement {
        ${this.hass.states["sensor.naver_weather_rainystarttmr_1"].state !== '비안옴'
             ? html`
                 <li>
-		          <ha-icon icon="${this.hass.states['sensor.naver_weather_nowweather_1'].state !== '비' ? 'mdi:umbrella-closed-variant' : 'mdi:umbrella'}" style="color: rgb(224, 161, 49)"></ha-icon>
+		  <ha-icon icon="${this.hass.states['sensor.naver_weather_nowweather_1'].state !== '비' ? 'mdi:umbrella-closed-variant' : 'mdi:umbrella'}" style="color: rgb(224, 161, 49)"></ha-icon>
                   <span style="color: ${this.hass.states["sensor.naver_weather_rainystarttmr_1"].state !== '비안옴' ? 'rgb(224, 161, 49)' : ''};"> ${this.hass.states["sensor.naver_weather_rainystarttmr_1"].state} 비 내림</span>
                 </li>
               `
@@ -488,9 +487,13 @@ class WeatherCard extends LitElement {
       }
 	  
       .subinfo {  
+        display: flex;
+        flex-direction: column;
+	justify-content: flex-start;
+	align-content: flex-start;
+        gap: 4px; /* 요소 간 간격 조정 */
 	font-size: 0.7em;
-        color: var(--secondary-text-color);        
-        line-height: 0.3;
+        color: var(--secondary-text-color);
       }
 
       .temp {
