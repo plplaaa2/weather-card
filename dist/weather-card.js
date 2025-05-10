@@ -498,6 +498,7 @@ class WeatherCard extends LitElement {
         position: absolute;
 	top: 0.5em;
         right: 1.2em;
+	margin-top: -20px;
       }
 
       .tempc {
