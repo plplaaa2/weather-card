@@ -274,14 +274,12 @@ class WeatherCard extends LitElement {
           )}') no-repeat; background-size: contain;"
           >${stateObj.state}
         </span>
-       <span class="title">${this.hass.states["sensor.hyeonjaenalssi"].state}<br>
-	 <span class="subinfo">
-	    ${this.hass.states["sensor.coejeoondo"].state}° / ${this.hass.states["sensor.coegoondo"].state}°
-            <span>습도 ${stateObj.attributes.humidity}% ${this.hass.states["sensor.hyeonjaepunghyang"].state}풍 ${this.hass.states["sensor.hyeonjaepungsog"].state}<span class="unit"> m/s</span></span>
-         </span>
-       </span>
-        <span class="temp" style="color: ${this.hass.states["sensor.cegamondo"].state < 0 ? 'rgb(0,191,255)' : this.hass.states["sensor.cegamondo"].state > 27 ? 'orange' : ''};"
-          >${this.hass.states["sensor.cegamondo"].state}</span>
+        <span class="title">${this.hass.states["sensor.hyeonjaenalssi"].state}<br>
+          <span class="subinfo"> ${this.hass.states["sensor.coejeoondo"].state}° / ${this.hass.states["sensor.coegoondo"].state}°
+          <span>습도 ${stateObj.attributes.humidity}% ${this.hass.states["sensor.hyeonjaepunghyang"].state}풍 ${this.hass.states["sensor.hyeonjaepungsog"].state}<span class="unit"> m/s</span></span>
+          </span>
+        </span>
+        <span class="temp" style="color: ${this.hass.states["sensor.cegamondo"].state < 0 ? 'rgb(0,191,255)' : this.hass.states["sensor.cegamondo"].state > 27 ? 'orange' : ''};"> ${this.hass.states["sensor.cegamondo"].state}</span>
         <span class="tempc"> ${this.getUnit("temperature")}</span>
       </div>
     `;
@@ -488,11 +486,11 @@ class WeatherCard extends LitElement {
 	  
       .subinfo {  
         display: flex;
-        flex-direction: column;
-	justify-content: flex-start;
-	align-content: flex-start;
+        flex-direction: column;        
+	    justify-content: flex-start;
+	    align-items: flex-start;
         gap: 0px; /* 요소 간 간격 조정 */
-	font-size: 0.7em;
+	    font-size: 0.7em;        
         color: var(--secondary-text-color);
       }
 
