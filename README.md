@@ -15,7 +15,7 @@ Special Thanks HACS 네이버 날씨 제작자 miumida님
 
 1. 기존 weather-card 삭제
 
-2. 네이버 날씨 특화 Weather-card 설치 ( HACS -> frontend -> : -> custom repositories)
+2. 네이버 날씨 특화 Weather-card v1.2.1 설치 ( HACS -> frontend -> : -> custom repositories)
 ```
 repositories : https://github.com/plplaaa2/weather-card
 category : dashboard
@@ -24,4 +24,3 @@ category : dashboard
 5. 카드 찾기에서 weather card 입력
 6. weather card 선택
 7. 구성요소에서 naver 날씨 선택
-
