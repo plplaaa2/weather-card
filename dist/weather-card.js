@@ -304,7 +304,7 @@ class WeatherCard extends LitElement {
        ${this.hass.states["sensor.bisijagsiganoneulnaeil"].state !== '비안옴'
             ? html`
                 <li>
-		  <ha-icon icon="${this.hass.states['sensor.hyeonjaenalssi'].state !== '비' ? 'mdi:umbrella-closed-variant' : 'mdi:umbrella'}" style="color: rgb(224, 161, 49)"></ha-icon>
+		  <ha-icon icon="${this.hass.states["sensor.hyeonjaenalssi"].state !== '비' ? 'mdi:umbrella-closed-variant' : 'mdi:umbrella'}" style="color: rgb(224, 161, 49)"></ha-icon>
                   <span style="color: ${this.hass.states["sensor.bisijagsiganoneulnaeil"].state !== '비안옴' ? 'rgb(224, 161, 49)' : ''};"> ${this.hass.states["sensor.bisijagsiganoneulnaeil"].state} 비 내림</span>
                 </li>
               `
