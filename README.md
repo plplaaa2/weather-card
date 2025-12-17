@@ -8,25 +8,6 @@ This card uses the awesome [animated SVG weather icons by amCharts](https://www.
 
 Thanks for all picking this card up.
 
-## 사전 주의사항
-
-기본 센서 값이 'sensor.naver~' 로 시작되는 것만 사용 가능하기 때문에
-한글을 영문으로 쓴 센서값 'sensor.gangsuryang' 일 경우
-기기 및 서비스 -> 네이버 날씨 -> 구성요소에 들어가 센서 값을 'sensor.naver~' 로 다시 수정하여야 사용 가능
-
-**entity id 수정 전**
-
-![image](https://github.com/user-attachments/assets/4e2a6752-c04b-4d7b-b73e-ea2137f4e568)
-
-이름을 클릭하면 바꿀 이름이 자동으로 나오니 적어 뒀다가 아래처럼 수정
-
-**entity id 수정 후**
-
-![image](https://github.com/user-attachments/assets/5c0dcad7-d1b1-4ba9-b462-91c2be380d33)
-
-네이버 날씨의 모든 센서를 이와 같이 변경해야 함
-(단, 뒤에 숫자는 _1 만 가능하기 때문에 네이버 날씨 카드로 쓸 수 있는 지역은 한 곳뿐)
-
 ## 설치 방법
 
 네이버 날씨설치
