@@ -274,14 +274,14 @@ class WeatherCard extends LitElement {
           )}') no-repeat; background-size: contain;"
           >${stateObj.state}
         </span>
-       <span class="title">${this.hass.states["sensor.naver_weather_nowweather_1"].state}<br>
+       <span class="title">${this.hass.states["sensor.hyeonjaenalssi"].state}<br>
 	 <span class="subinfo">
-	    ${this.hass.states["sensor.naver_weather_todaymintemp_1"].state}° / ${this.hass.states["sensor.naver_weather_todaymaxtemp_1"].state}°
-            <span>습도 ${stateObj.attributes.humidity}% ${this.hass.states["sensor.naver_weather_windbearing_1"].state}풍 ${this.hass.states["sensor.naver_weather_windspeed_1"].state}<span class="unit"> m/s</span></span>
+	    ${this.hass.states["sensor.coejeoondo"].state}° / ${this.hass.states["sensor.coegoondo"].state}°
+            <span>습도 ${stateObj.attributes.humidity}% ${this.hass.states["sensor.hyeonjaepunghyang"].state}풍 ${this.hass.states["sensor.hyeonjaepungsog"].state}<span class="unit"> m/s</span></span>
          </span>
        </span>
-        <span class="temp" style="color: ${this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state < 0 ? 'rgb(0,191,255)' : this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state > 27 ? 'orange' : ''};"
-          >${this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state}</span>
+        <span class="temp" style="color: ${this.hass.states["sensor.cegamondo"].state < 0 ? 'rgb(0,191,255)' : this.hass.states["sensor.cegamondo"].state > 27 ? 'orange' : ''};"
+          >${this.hass.states["sensor.cegamondo"].state}</span>
         <span class="tempc"> ${this.getUnit("temperature")}</span>
       </div>
     `;
@@ -301,37 +301,37 @@ class WeatherCard extends LitElement {
 
     return html`
       <ul class="variations ${this.numberElements > 1 ? "spacer" : ""}">
-       ${this.hass.states["sensor.naver_weather_rainystarttmr_1"].state !== '비안옴'
+       ${this.hass.states["sensor.bisijagsiganoneulnaeil"].state !== '비안옴'
             ? html`
                 <li>
-		  <ha-icon icon="${this.hass.states['sensor.naver_weather_nowweather_1'].state !== '비' ? 'mdi:umbrella-closed-variant' : 'mdi:umbrella'}" style="color: rgb(224, 161, 49)"></ha-icon>
-                  <span style="color: ${this.hass.states["sensor.naver_weather_rainystarttmr_1"].state !== '비안옴' ? 'rgb(224, 161, 49)' : ''};"> ${this.hass.states["sensor.naver_weather_rainystarttmr_1"].state} 비 내림</span>
+		  <ha-icon icon="${this.hass.states['sensor.hyeonjaenalssi'].state !== '비' ? 'mdi:umbrella-closed-variant' : 'mdi:umbrella'}" style="color: rgb(224, 161, 49)"></ha-icon>
+                  <span style="color: ${this.hass.states["sensor.bisijagsiganoneulnaeil"].state !== '비안옴' ? 'rgb(224, 161, 49)' : ''};"> ${this.hass.states["sensor.bisijagsiganoneulnaeil"].state} 비 내림</span>
                 </li>
               `
             : ""}
-		${this.hass.states["sensor.naver_weather_rainystarttmr_1"].state !== '비안옴'
+		${this.hass.states["sensor.bisijagsiganoneulnaeil"].state !== '비안옴'
             ? html`
                 <li>
-                  <ha-icon icon="${this.hass.states['sensor.naver_weather_rainfall_1'].state == 0 ? 'mdi:weather-cloudy' : this.hass.states['sensor.naver_weather_rainfall_1'].state > 0 && this.hass.states['sensor.naver_weather_rainfall_1'].state <= 3 ? 'mdi:weather-rainy' : this.hass.states['sensor.naver_weather_rainfall_1'].state >= 4 ? 'mdi:weather-pouring' : ''}" style="color: rgb(224, 161, 49)"></ha-icon>
-                  예상 강수량 ${this.hass.states["sensor.naver_weather_rainfall_1"].state}㎜
+                  <ha-icon icon="${this.hass.states['sensor.sigandanggangsuryang'].state == 0 ? 'mdi:weather-cloudy' : this.hass.states['sensor.sigandanggangsuryang'].state > 0 && this.hass.states['sensor.sigandanggangsuryang'].state <= 3 ? 'mdi:weather-rainy' : this.hass.states['sensor.sigandanggangsuryang'].state >= 4 ? 'mdi:weather-pouring' : ''}" style="color: rgb(224, 161, 49)"></ha-icon>
+                  예상 강수량 ${this.hass.states["sensor.sigandanggangsuryang"].state}㎜
                 </li>
               `
             : ""}
         <li>
-          <ha-icon icon= "mdi:blur" style="color: ${this.hass.states["sensor.naver_weather_finedustgrade_1"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.naver_weather_finedustgrade_1"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.naver_weather_finedustgrade_1"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.naver_weather_finedustgrade_1"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
-          미세먼지 ${this.hass.states["sensor.naver_weather_finedustgrade_1"].state}
+          <ha-icon icon= "mdi:blur" style="color: ${this.hass.states["sensor.misemeonjideunggeub"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.misemeonjideunggeub"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.misemeonjideunggeub"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.misemeonjideunggeub"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          미세먼지 ${this.hass.states["sensor.misemeonjideunggeub"].state}
         </li>
         <li>
-          <ha-icon icon="mdi:sun-wireless-outline" style="color: ${this.hass.states["sensor.naver_weather_todayuvgrade_1"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.naver_weather_todayuvgrade_1"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.naver_weather_todayuvgrade_1"].state === '높음' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.naver_weather_todayuvgrade_1"].state === '매우높음' ? 'red' : this.hass.states["sensor.naver_weather_todayuvgrade_1"].state === '위험' ? 'violet' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
-          자외선 ${this.hass.states["sensor.naver_weather_todayuvgrade_1"].state}
+          <ha-icon icon="mdi:sun-wireless-outline" style="color: ${this.hass.states["sensor.jaoeseondeunggeub"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.jaoeseondeunggeub"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.jaoeseondeunggeub"].state === '높음' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.jaoeseondeunggeub"].state === '매우높음' ? 'red' : this.hass.states["sensor.jaoeseondeunggeub"].state === '위험' ? 'violet' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          자외선 ${this.hass.states["sensor.jaoeseondeunggeub"].state}
         </li>
         <li>
-          <ha-icon icon="mdi:blur-linear" style="color: ${this.hass.states["sensor.naver_weather_ultrafinedustgrade_1"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.naver_weather_ultrafinedustgrade_1"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.naver_weather_ultrafinedustgrade_1"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.naver_weather_ultrafinedustgrade_1"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
-          초미세먼지 ${this.hass.states["sensor.naver_weather_ultrafinedustgrade_1"].state}
+          <ha-icon icon="mdi:blur-linear" style="color: ${this.hass.states["sensor.comisemeonjideunggeub"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.comisemeonjideunggeub"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.comisemeonjideunggeub"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.comisemeonjideunggeub"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          초미세먼지 ${this.hass.states["sensor.comisemeonjideunggeub"].state}
         </li>
         <li>
-          <ha-icon icon="mdi:alert-circle-outline" style="color: ${this.hass.states["sensor.naver_weather_ozongrade_1"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.naver_weather_ozongrade_1"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.naver_weather_ozongrade_1"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.naver_weather_ozongrade_1"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
-          오존 ${this.hass.states["sensor.naver_weather_ozongrade_1"].state}
+          <ha-icon icon="mdi:alert-circle-outline" style="color: ${this.hass.states["sensor.ojon"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.ojon"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.ojon"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.ojon"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          오존 ${this.hass.states["sensor.ojon"].state}
         </li>
         ${next_rising
           ? html`
