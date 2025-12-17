@@ -1,0 +1,8 @@
+{
+  "name": "Naver Weather Card",
+  "content_in_root": false,
+  "render_readme": true,
+  "filename": "weather-card.js",
+  "domains": [],
+  "country": "KR"
+}
