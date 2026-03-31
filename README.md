@@ -10,6 +10,12 @@ Thanks for all picking this card up.
 
 ## 설치 방법
 
+### 자동 설치
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=plplaaa2&repository=https%3A%2F%2Fgithub.com%2Fplplaaa2%2Fweather-card&category=dashboard)
+
+### 수동 설치
+
 네이버 날씨설치
 Special Thanks HACS 네이버 날씨 제작자 miumida님
 
