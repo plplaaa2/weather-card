@@ -1,3 +1,7 @@
+## 1.2.1
+
+- Not need change entity_id
+
 ## 1.2.0
 
 - Added UI editor
