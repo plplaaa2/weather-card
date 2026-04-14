@@ -132,6 +132,13 @@ class WeatherCard extends LitElement {
           },
         },
         { name: "number_of_forecasts", default: 5, selector: { number: {} } },
+        { name: "apparent_temp_sensor", selector: { entity: { domain: "sensor" } } },
+        { name: "precip_start_sensor", selector: { entity: { domain: "sensor" } } },
+        { name: "precip_quantity_sensor", selector: { entity: { domain: "sensor" } } },
+        { name: "pm10_sensor", selector: { entity: { domain: "sensor" } } },
+        { name: "uv_sensor", selector: { entity: { domain: "sensor" } } },
+        { name: "pm25_sensor", selector: { entity: { domain: "sensor" } } },
+        { name: "ozone_sensor", selector: { entity: { domain: "sensor" } } },
       ],
     };
   }
@@ -148,7 +155,10 @@ class WeatherCard extends LitElement {
     if (!config.entity) {
       throw new Error("Please define a weather entity");
     }
-    this._config = { forecast_type: "daily", ...config };
+    this._config = {
+      forecast_type: "daily",
+      ...config
+    };
   }
 
   _needForecastSubscription() {
@@ -190,6 +200,13 @@ class WeatherCard extends LitElement {
     );
   }
 
+  _getValue(sensor, attrValue) {
+    if (sensor && this.hass.states[sensor]) {
+      return this.hass.states[sensor].state;
+    }
+    return attrValue || '-';
+  }
+
   connectedCallback() {
     super.connectedCallback();
     if (this.hasUpdated && this._config && this.hass) {
@@ -215,6 +232,12 @@ class WeatherCard extends LitElement {
     }
   }
 
+  getWindDir(deg) {
+    if (deg === undefined) return "";
+    if (isNaN(deg)) return deg;
+    return windDirections[Math.floor((deg + 11.25) / 22.5)];
+  }
+
   render() {
     if (!this._config || !this.hass) {
       return html``;
@@ -226,6 +249,7 @@ class WeatherCard extends LitElement {
     const stateObj = this.hass.states[this._config.entity];
 
     if (!stateObj) {
+      console.warn("WeatherCard: Entity not found", this._config.entity);
       return html`
         <style>
           .not-found {
@@ -242,47 +266,77 @@ class WeatherCard extends LitElement {
       `;
     }
 
+    const forecast = this._forecastEvent || {
+      forecast: stateObj.attributes.forecast,
+      type: this._config.hourly_forecast ? "hourly" : "daily",
+    };
+
+    // 디버깅 로그 추가
+    console.log("WeatherCard Rendering - Entity:", this._config.entity, "State:", stateObj.state);
+
     return html`
       <ha-card @click="${this._handleClick}">
-        ${this._config.current !== false ? this.renderCurrent(stateObj) : ""}
+        ${this._config.current !== false ? this.renderCurrent(stateObj, forecast) : ""}
         ${this._config.details !== false
           ? this.renderDetails(stateObj, lang)
           : ""}
         ${this._config.forecast !== false
-          ? this.renderForecast(
-              this._forecastEvent || {
-                forecast: stateObj.attributes.forecast,
-                type: this._config.hourly_forecast ? "hourly" : "daily",
-              },
-              lang
-            )
+          ? this.renderForecast(forecast, lang)
           : ""}
       </ha-card>
     `;
   }
 
-  renderCurrent(stateObj) {
-    this.numberElements++;
+  renderCurrent(stateObj, forecast) {
+    try {
+      this.numberElements++;
+      const forecastData = forecast?.forecast || [];
+      const today = forecastData.length > 0 ? forecastData[0] : null;
+      
+      const state = stateObj?.state || "";
+      const attributes = stateObj?.attributes || {};
+      
+      console.log("WeatherCard renderCurrent - Attributes:", attributes);
 
-    return html`
-      <div class="current ${this.numberElements > 1 ? "spacer" : ""}">
-        <span
-          class="icon bigger"
-          style="background: none, url('${this.getWeatherIcon(
-            stateObj.state.toLowerCase(),
-            this.hass.states["sun.sun"]
-          )}') no-repeat; background-size: contain;"
-          >${stateObj.state}
-        </span>
-        <span class="title">${this.hass.states["sensor.hyeonjaenalssi"].state}<br>
-          <span class="subinfo"> ${this.hass.states["sensor.coejeoondo"].state}° / ${this.hass.states["sensor.coegoondo"].state}°
-          <span>습도 ${stateObj.attributes.humidity}% ${this.hass.states["sensor.hyeonjaepunghyang"].state}풍 ${this.hass.states["sensor.hyeonjaepungsog"].state}<span class="unit"> m/s</span></span>
+      const statusText = this.hass.formatEntityState ? this.hass.formatEntityState(stateObj) : state;
+      const currentTemp = attributes.temperature !== undefined ? attributes.temperature : (attributes.apparent_temperature || attributes.TodayFeelTemp || '-');
+      const minTemp = today?.templow !== undefined ? today.templow : (attributes.TodayMinTemp || '-');
+      const maxTemp = today?.temperature !== undefined ? today.temperature : (attributes.TodayMaxTemp || '-');
+      const humidity = attributes.humidity !== undefined ? attributes.humidity : '-';
+      const windSpeed = attributes.WindSpeed || attributes.wind_speed || '-';
+      const windBearing = attributes.wind_bearing;
+
+      const iconPath = this.getWeatherIcon((state || "").toLowerCase(), this.hass.states["sun.sun"]);
+
+      return html`
+        <div class="current ${this.numberElements > 1 ? "spacer" : ""}">
+          <span
+            class="icon bigger"
+            style="background: none, url('${iconPath}') no-repeat; background-size: contain;"
+            >${state}
           </span>
-        </span>
-        <span class="temp" style="color: ${this.hass.states["sensor.cegamondo"].state < 0 ? 'rgb(0,191,255)' : this.hass.states["sensor.cegamondo"].state > 27 ? 'orange' : ''};"> ${this.hass.states["sensor.cegamondo"].state}</span>
-        <span class="tempc"> ${this.getUnit("temperature")}</span>
-      </div>
-    `;
+          <span class="title">
+            ${statusText}<br>
+            <span class="subinfo">
+              ${minTemp}° / ${maxTemp}°
+              <span>습도 ${humidity}% ${this.getWindDir(windBearing)}풍 ${windSpeed} <span class="unit">m/s</span></span>
+            </span>
+          </span>
+          <span class="temp">${currentTemp}</span>
+          <span class="tempc">${this.getUnit("temperature")}</span>
+        </div>
+      `;
+    } catch (e) {
+      console.error("Error rendering current weather:", e);
+      return html`<div class="current">Error rendering current weather</div>`;
+    }
+  }
+
+  getWindDir(deg) {
+    if (deg === undefined || deg === null || deg === "") return "";
+    if (isNaN(deg)) return deg;
+    const directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+    return directions[Math.floor((parseFloat(deg) + 11.25) / 22.5)];
   }
 
   renderDetails(stateObj) {
@@ -299,37 +353,37 @@ class WeatherCard extends LitElement {
 
     return html`
       <ul class="variations ${this.numberElements > 1 ? "spacer" : ""}">
-       ${this.hass.states["sensor.bisijagsiganoneulnaeil"].state !== '비안옴'
+       ${this._getValue(this._config.precip_start_sensor, stateObj.attributes.rainyStart) !== '비안옴'
             ? html`
                 <li>
-		          <ha-icon icon="${this.hass.states['sensor.hyeonjaenalssi'].state !== '비' ? 'mdi:umbrella-closed-variant' : 'mdi:umbrella'}" style="color: rgb(224, 161, 49)"></ha-icon>
-                  <span style="color: ${this.hass.states["sensor.bisijagsiganoneulnaeil"].state !== '비안옴' ? 'rgb(224, 161, 49)' : ''};"> ${this.hass.states["sensor.bisijagsiganoneulnaeil"].state} 비 내림</span>
+		  <ha-icon icon="${!['rainy', 'pouring', 'lightning-rainy'].includes(stateObj.state) ? 'mdi:umbrella-closed-variant' : 'mdi:umbrella'}" style="color: rgb(224, 161, 49)"></ha-icon>
+                  <span style="color: ${this._getValue(this._config.precip_start_sensor, stateObj.attributes.rainyStart) !== '비안옴' ? 'rgb(224, 161, 49)' : ''};"> ${this._getValue(this._config.precip_start_sensor, stateObj.attributes.rainyStart)} 비 내림</span>
                 </li>
               `
             : ""}
-	   ${this.hass.states["sensor.bisijagsiganoneulnaeil"].state !== '비안옴'
+		${this._getValue(this._config.precip_start_sensor, stateObj.attributes.rainyStart) !== '비안옴'
             ? html`
                 <li>
-                  <ha-icon icon="${this.hass.states['sensor.sigandanggangsuryang'].state == 0 ? 'mdi:weather-cloudy' : this.hass.states['sensor.sigandanggangsuryang'].state > 0 && this.hass.states['sensor.sigandanggangsuryang'].state <= 3 ? 'mdi:weather-rainy' : this.hass.states['sensor.sigandanggangsuryang'].state >= 4 ? 'mdi:weather-pouring' : ''}" style="color: rgb(224, 161, 49)"></ha-icon>
-                  예상 강수량 ${this.hass.states["sensor.sigandanggangsuryang"].state}㎜
+                  <ha-icon icon="${this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) == 0 ? 'mdi:weather-cloudy' : this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) > 0 && this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) <= 3 ? 'mdi:weather-rainy' : this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) >= 4 ? 'mdi:weather-pouring' : ''}" style="color: rgb(224, 161, 49)"></ha-icon>
+                  예상 강수량 ${this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall)}㎜
                 </li>
               `
             : ""}
         <li>
-          <ha-icon icon= "mdi:blur" style="color: ${this.hass.states["sensor.misemeonjideunggeub"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.misemeonjideunggeub"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.misemeonjideunggeub"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.misemeonjideunggeub"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
-          미세먼지 ${this.hass.states["sensor.misemeonjideunggeub"].state}
+          <ha-icon icon= "mdi:blur" style="color: ${this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade) === '좋음' ? 'rgb(13, 93, 148)' : this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade) === '보통' ? 'rgb(13, 187, 74)' : this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade) === '나쁨' ? 'rgb(224, 161, 49)' : this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade) === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          미세먼지 ${this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade)}
         </li>
         <li>
-          <ha-icon icon="mdi:sun-wireless-outline" style="color: ${this.hass.states["sensor.jaoeseondeunggeub"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.jaoeseondeunggeub"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.jaoeseondeunggeub"].state === '높음' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.jaoeseondeunggeub"].state === '매우높음' ? 'red' : this.hass.states["sensor.jaoeseondeunggeub"].state === '위험' ? 'violet' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
-          자외선 ${this.hass.states["sensor.jaoeseondeunggeub"].state}
+          <ha-icon icon="mdi:sun-wireless-outline" style="color: ${this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade) === '좋음' ? 'rgb(13, 93, 148)' : this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade) === '보통' ? 'rgb(13, 187, 74)' : this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade) === '높음' ? 'rgb(224, 161, 49)' : this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade) === '매우높음' ? 'red' : this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade) === '위험' ? 'violet' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          자외선 ${this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade)}
         </li>
         <li>
-          <ha-icon icon="mdi:blur-linear" style="color: ${this.hass.states["sensor.comisemeonjideunggeub"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.comisemeonjideunggeub"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.comisemeonjideunggeub"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.comisemeonjideunggeub"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
-          초미세먼지 ${this.hass.states["sensor.comisemeonjideunggeub"].state}
+          <ha-icon icon="mdi:blur-linear" style="color: ${this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade) === '좋음' ? 'rgb(13, 93, 148)' : this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade) === '보통' ? 'rgb(13, 187, 74)' : this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade) === '나쁨' ? 'rgb(224, 161, 49)' : this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade) === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          초미세먼지 ${this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade)}
         </li>
         <li>
-          <ha-icon icon="mdi:alert-circle-outline" style="color: ${this.hass.states["sensor.ojon"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.ojon"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.ojon"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.ojon"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
-          오존 ${this.hass.states["sensor.ojon"].state}
+          <ha-icon icon="mdi:alert-circle-outline" style="color: ${this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '좋음' ? 'rgb(13, 93, 148)' : this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '보통' ? 'rgb(13, 187, 74)' : this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '나쁨' ? 'rgb(224, 161, 49)' : this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          오존 ${this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade)}
         </li>
         ${next_rising
           ? html`
@@ -486,11 +540,11 @@ class WeatherCard extends LitElement {
 	  
       .subinfo {  
         display: flex;
-        flex-direction: column;        
-	    justify-content: flex-start;
-	    align-items: flex-start;
+        flex-direction: column;
+	justify-content: flex-start;
+	align-content: flex-start;
         gap: 0px; /* 요소 간 간격 조정 */
-	    font-size: 0.7em;        
+	font-size: 0.7em;
         color: var(--secondary-text-color);
       }
 
