@@ -132,7 +132,6 @@ class WeatherCard extends LitElement {
           },
         },
         { name: "number_of_forecasts", default: 5, selector: { number: {} } },
-        { name: "apparent_temp_sensor", selector: { entity: { domain: "sensor" } } },
         { name: "precip_start_sensor", selector: { entity: { domain: "sensor" } } },
         { name: "precip_quantity_sensor", selector: { entity: { domain: "sensor" } } },
         { name: "pm10_sensor", selector: { entity: { domain: "sensor" } } },
