@@ -206,6 +206,33 @@ class WeatherCard extends LitElement {
     return attrValue || '-';
   }
 
+  _getGrade(type, value) {
+    if (value === undefined || value === null || value === '-' || isNaN(value) || value === '') {
+      return value;
+    }
+    const val = parseFloat(value);
+    if (type === 'pm25') {
+      if (val <= 8) return "쾌적";
+      if (val <= 15) return "좋음";
+      if (val <= 20) return "양호";
+      if (val <= 25) return "보통";
+      if (val <= 37) return "나쁨";
+      if (val <= 50) return "매우나쁨";
+      if (val <= 75) return "아주나쁨";
+      return "최악";
+    } else if (type === 'pm10') {
+      if (val <= 15) return "쾌적";
+      if (val <= 30) return "좋음";
+      if (val <= 40) return "양호";
+      if (val <= 50) return "보통";
+      if (val <= 75) return "나쁨";
+      if (val <= 100) return "매우나쁨";
+      if (val <= 150) return "아주나쁨";
+      return "최악";
+    }
+    return value;
+  }
+
   connectedCallback() {
     super.connectedCallback();
     if (this.hasUpdated && this._config && this.hass) {
@@ -302,8 +329,8 @@ class WeatherCard extends LitElement {
       const minTemp = today?.templow !== undefined ? today.templow : (attributes.TodayMinTemp || '-');
       const maxTemp = today?.temperature !== undefined ? today.temperature : (attributes.TodayMaxTemp || '-');
       const humidity = attributes.humidity !== undefined ? attributes.humidity : '-';
-      const windSpeed = attributes.WindSpeed || attributes.wind_speed || '-';
-      const windBearing = attributes.wind_bearing;
+      const windSpeed = attributes.WindSpeed !== undefined ? attributes.WindSpeed : (attributes.wind_speed !== undefined ? attributes.wind_speed : '-');
+      const windBearing = attributes.WindBearing !== undefined ? attributes.WindBearing : (attributes.wind_bearing !== undefined ? attributes.wind_bearing : '');
 
       const iconPath = this.getWeatherIcon((state || "").toLowerCase(), this.hass.states["sun.sun"]);
 
@@ -333,8 +360,23 @@ class WeatherCard extends LitElement {
 
   getWindDir(deg) {
     if (deg === undefined || deg === null || deg === "") return "";
-    if (isNaN(deg)) return deg;
-    const directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+    
+    // 영문 풍향 매핑 객체
+    const windDirMap = {
+      "N": "북", "NNE": "북북동", "NE": "북동", "ENE": "동북동",
+      "E": "동", "ESE": "동남동", "SE": "남동", "SSE": "남남동",
+      "S": "남", "SSW": "남남서", "SW": "남서", "WSW": "서남서",
+      "W": "서", "WNW": "서북서", "NW": "북서", "NNW": "북북서"
+    };
+
+    if (isNaN(deg)) {
+      // 만약 문자열(N, SW 등)이 들어오면 한글로 변환 시도
+      const upperDeg = deg.toUpperCase();
+      return windDirMap[upperDeg] || deg;
+    }
+    
+    // 수치(각도)인 경우 한글로 리턴
+    const directions = ["북", "북북동", "북동", "동북동", "동", "동남동", "남동", "남남동", "남", "남남서", "남서", "서남서", "서", "서북서", "북서", "북북서", "북"];
     return directions[Math.floor((parseFloat(deg) + 11.25) / 22.5)];
   }
 
@@ -369,19 +411,51 @@ class WeatherCard extends LitElement {
               `
             : ""}
         <li>
-          <ha-icon icon= "mdi:blur" style="color: ${this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade) === '좋음' ? 'rgb(13, 93, 148)' : this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade) === '보통' ? 'rgb(13, 187, 74)' : this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade) === '나쁨' ? 'rgb(224, 161, 49)' : this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade) === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
-          미세먼지 ${this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade)}
+          <ha-icon icon= "mdi:blur" style="color: ${
+            (() => {
+              const g = this._getGrade('pm10', this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade));
+              return g === '쾌적' ? '#0285D1' : 
+                     g === '좋음' ? '#02A8D1' : 
+                     g === '양호' ? '#02d189' : 
+                     g === '보통' ? '#02D109' : 
+                     g === '나쁨' ? '#E86E02' : 
+                     g === '매우나쁨' ? '#E84302' : 
+                     g === '아주나쁨' ? '#AB0202' : 
+                     g === '최악' ? '#A9A9A9' : 
+                     'rgba(255, 255, 255, 0)';
+            })()
+          };"></ha-icon>
+          미세먼지 ${this._getGrade('pm10', this._getValue(this._config.pm10_sensor, stateObj.attributes.FineDustGrade))}
         </li>
         <li>
           <ha-icon icon="mdi:sun-wireless-outline" style="color: ${this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade) === '좋음' ? 'rgb(13, 93, 148)' : this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade) === '보통' ? 'rgb(13, 187, 74)' : this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade) === '높음' ? 'rgb(224, 161, 49)' : this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade) === '매우높음' ? 'red' : this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade) === '위험' ? 'violet' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
           자외선 ${this._getValue(this._config.uv_sensor, stateObj.attributes.TodayUVGrade)}
         </li>
         <li>
-          <ha-icon icon="mdi:blur-linear" style="color: ${this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade) === '좋음' ? 'rgb(13, 93, 148)' : this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade) === '보통' ? 'rgb(13, 187, 74)' : this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade) === '나쁨' ? 'rgb(224, 161, 49)' : this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade) === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
-          초미세먼지 ${this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade)}
+          <ha-icon icon="mdi:blur-linear" style="color: ${
+            (() => {
+              const g = this._getGrade('pm25', this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade));
+              return g === '쾌적' ? '#0285D1' : 
+                     g === '좋음' ? '#02A8D1' : 
+                     g === '양호' ? '#02d189' : 
+                     g === '보통' ? '#02D109' : 
+                     g === '나쁨' ? '#E86E02' : 
+                     g === '매우나쁨' ? '#E84302' : 
+                     g === '아주나쁨' ? '#AB0202' : 
+                     g === '최악' ? '#A9A9A9' : 
+                     'rgba(255, 255, 255, 0)';
+            })()
+          };"></ha-icon>
+          초미세먼지 ${this._getGrade('pm25', this._getValue(this._config.pm25_sensor, stateObj.attributes.UltraFineDustGrade))}
         </li>
         <li>
-          <ha-icon icon="mdi:alert-circle-outline" style="color: ${this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '좋음' ? 'rgb(13, 93, 148)' : this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '보통' ? 'rgb(13, 187, 74)' : this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '나쁨' ? 'rgb(224, 161, 49)' : this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          <ha-icon icon="mdi:alert-circle-outline" style="color: ${
+            this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '좋음' ? 'rgb(13, 93, 148)' : 
+            this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '보통' ? 'rgb(13, 187, 74)' : 
+            this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '나쁨' ? 'rgb(224, 161, 49)' : 
+            this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade) === '매우나쁨' ? 'red' : 
+            'rgba(255, 255, 255, 0)'
+          };"></ha-icon>
           오존 ${this._getValue(this._config.ozone_sensor, stateObj.attributes.OzonGrade)}
         </li>
         ${next_rising
