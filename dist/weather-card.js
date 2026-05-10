@@ -392,21 +392,30 @@ class WeatherCard extends LitElement {
 
     this.numberElements++;
 
+    const rainyStart = this._getValue(this._config.precip_start_sensor, stateObj.attributes.rainyStart);
+    const rainyStartTmr = stateObj.attributes.rainyStartTmr || '비안옴';
+    const isRainToday = rainyStart !== '비안옴';
+    const isRainTmr = !isRainToday && rainyStartTmr !== '비안옴';
+    const rainText = isRainToday ? rainyStart : (isRainTmr ? rainyStartTmr : null);
+
     return html`
       <ul class="variations ${this.numberElements > 1 ? "spacer" : ""}">
-       ${this._getValue(this._config.precip_start_sensor, stateObj.attributes.rainyStart) !== '비안옴'
+        ${rainText
             ? html`
                 <li>
 		  <ha-icon icon="${!['rainy', 'pouring', 'lightning-rainy'].includes(stateObj.state) ? 'mdi:umbrella-closed-variant' : 'mdi:umbrella'}" style="color: rgb(224, 161, 49)"></ha-icon>
-                  <span style="color: ${this._getValue(this._config.precip_start_sensor, stateObj.attributes.rainyStart) !== '비안옴' ? 'rgb(224, 161, 49)' : ''};"> ${this._getValue(this._config.precip_start_sensor, stateObj.attributes.rainyStart)} 비 내림</span>
+                  <span style="color: rgb(224, 161, 49);"> ${rainText} 비 내림</span>
                 </li>
               `
             : ""}
-		${this._getValue(this._config.precip_start_sensor, stateObj.attributes.rainyStart) !== '비안옴'
+		${rainText
             ? html`
                 <li>
-                  <ha-icon icon="${this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) == 0 ? 'mdi:weather-cloudy' : this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) > 0 && this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) <= 3 ? 'mdi:weather-rainy' : this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) >= 4 ? 'mdi:weather-pouring' : ''}" style="color: rgb(224, 161, 49)"></ha-icon>
-                  예상 강수량 ${this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall || stateObj.attributes.rainfall)}㎜
+                  <ha-icon icon="${isRainToday ? (this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) == 0 ? 'mdi:weather-cloudy' : this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) > 0 && this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) <= 3 ? 'mdi:weather-rainy' : this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall) >= 4 ? 'mdi:weather-pouring' : '') : 'mdi:weather-rainy'}" style="color: rgb(224, 161, 49)"></ha-icon>
+                  ${isRainToday 
+                    ? html`예상 강수량 ${this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall || stateObj.attributes.rainfall)}㎜`
+                    : html`강수 확률 ${stateObj.attributes.rainPercent}%`
+                  }
                 </li>
               `
             : ""}
@@ -789,4 +798,6 @@ class WeatherCard extends LitElement {
     `;
   }
 }
-customElements.define("weather-card", WeatherCard);
+if (!customElements.get("weather-card")) {
+  customElements.define("weather-card", WeatherCard);
+}
