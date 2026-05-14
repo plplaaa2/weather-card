@@ -378,6 +378,7 @@ class WeatherCard extends LitElement {
     // 수치(각도)인 경우 한글로 리턴
     const directions = ["북", "북북동", "북동", "동북동", "동", "동남동", "남동", "남남동", "남", "남남서", "남서", "서남서", "서", "서북서", "북서", "북북서", "북"];
     return directions[Math.floor((parseFloat(deg) + 11.25) / 22.5)];
+
   }
 
   renderDetails(stateObj) {
@@ -400,6 +401,7 @@ class WeatherCard extends LitElement {
 
     return html`
       <ul class="variations ${this.numberElements > 1 ? "spacer" : ""}">
+
         ${rainText
             ? html`
                 <li>
@@ -416,6 +418,7 @@ class WeatherCard extends LitElement {
                     ? html`예상 강수량 ${this._getValue(this._config.precip_quantity_sensor, stateObj.attributes.precipitation || stateObj.attributes.Rainfall || stateObj.attributes.rainfall)}㎜`
                     : html`강수 확률 ${stateObj.attributes.rainPercent}%`
                   }
+
                 </li>
               `
             : ""}
@@ -620,6 +623,7 @@ class WeatherCard extends LitElement {
         color: var(--primary-text-color);
       }
 	  
+
       .subinfo {  
         display: flex;
         flex-direction: column;
@@ -627,6 +631,7 @@ class WeatherCard extends LitElement {
 	align-content: flex-start;
         gap: 0px; /* 요소 간 간격 조정 */
 	font-size: 0.7em;
+
         color: var(--secondary-text-color);
       }
 
@@ -642,6 +647,7 @@ class WeatherCard extends LitElement {
       .tempc {
         top: 0.5em;
         font-weight: 300;
+
         font-size: 1.3em;
         vertical-align: super;
         color: var(--primary-text-color);
@@ -651,6 +657,15 @@ class WeatherCard extends LitElement {
         margin-right: 7px;
       }
       
+      .hum {
+        font-weight: 300;
+        font-size: 0.7em;
+        color: var(--primary-text-color);
+        position: absolute;
+        right: 1.2em;
+        margin-top: -25px;
+        margin-right: 7px;
+      }
       .hum {
         font-weight: 300;
         font-size: 0.7em;
